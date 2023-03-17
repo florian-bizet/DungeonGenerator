@@ -14,12 +14,12 @@ public class Room {
     }
 
     public boolean intersect(Room r) {
-        return (this.x >= r.x && this.x <= r.x+r.w+1) && (this.y >= r.y && this.y <= r.y+r.h+1) || (this.x+this.w >= r.x && this.x+this.w <= r.x+r.w+1) && (this.y+this.h >= r.y && this.y+this.h <= r.y+r.h+1);
+        return (this.x < r.x + r.w && this.x + this.w > r.x) && (this.y < r.y + r.h && this.y + this.h > r.y);
     }
 
     
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Room r1 = new Room(0, 0, 25, 25);
         Room r2 = new Room(5,5,5,5);
 
@@ -41,7 +41,7 @@ public class Room {
         System.out.println("Expected output : false");
         System.out.println("Output 1        : " + r1.intersect(r4));
         System.out.println("Output 2        : " + r4.intersect(r1));
-    }
+    }*/
 
     public int getX() {
         return x;

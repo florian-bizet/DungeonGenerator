@@ -14,4 +14,8 @@ public class Dungeon {
         this.currentFloorID = 0;
     }
 
+    public void nextFloor() {
+        
+    }
+
 }

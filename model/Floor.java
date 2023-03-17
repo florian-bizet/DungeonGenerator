@@ -20,7 +20,7 @@ public class Floor {
                 this.generated[iH][iW] = '#';
     }
 
-    public void generate() {
+    public char[][] generate() {
         //Generating Rooms
         for (int i = 0; i < rooms.length; i++) {
             
@@ -62,6 +62,8 @@ public class Floor {
             }
         }
 
+        return this.generated;
+
     }
 
     public void horizontalPath(int x1, int x2, int y) {
@@ -93,9 +95,9 @@ public class Floor {
         return s;
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Floor f = new Floor(80, 80, 8);
         f.generate();
         System.out.println(f);
-    }
+    }*/
 }
