@@ -35,7 +35,7 @@ public class FloorPanel extends JPanel {
             //Walls
             for (int i = 0; i < 24; i++) {
                 for (int j = 0; j < 3; j++) {
-                    wallList.add(tileset.getSubimage(9+(3+i)*25, 163+j*25, 24, 24));
+                    wallList.add(tileset.getSubimage(9+(3+j)*25, 163+i*25, 24, 24));
                 }
             }
 
@@ -48,10 +48,15 @@ public class FloorPanel extends JPanel {
     }
 
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
         for (int i = 0; i < floorArray.length; i++) {
             for (int j = 0; j < floorArray[i].length; j++) {
-                if (floorArray[i][j] == '#') {g.drawImage(wallList.get(4), i*24, j*24, null);}
-                if (floorArray[i][j] == ' ') {g.drawImage(floorTex, i*24, j*24, null);}
+                if (floorArray[i][j] == ' ') {g.drawImage(floorTex, j*24, i*24, null); continue;}
+
+                g.drawImage(wallList.get((int) (floorArray[i][j] - '!')), j*24, i*24, null); 
+                //g.drawString(String.format("%d", (int) (floorArray[i][j] - '!')), j*24, i*24);
+                continue;
             }
         }
     }

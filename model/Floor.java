@@ -17,15 +17,15 @@ public class Floor {
 
         for (int iH = 0; iH < h; iH++)
             for (int iW = 0; iW < w; iW++)
-                this.generated[iH][iW] = '#';
+                this.generated[iH][iW] = '%';
     }
 
     public char[][] generate() {
         //Generating Rooms
         for (int i = 0; i < rooms.length; i++) {
             
-            int x     = 1 + (int) (Math.random()*this.w);
-            int y     = 1 + (int) (Math.random()*this.h);
+            int x     = 2 + (int) (Math.random()*(this.w-2));
+            int y     = 2 + (int) (Math.random()*(this.h-2));
             int roomW = 5 + (int) (Math.random()*this.w/5);
             int roomH = 5 + (int) (Math.random()*this.h/5);
 
@@ -62,6 +62,34 @@ public class Floor {
             }
         }
 
+        for (int i = 1; i < this.generated.length-1; i++) {
+            for (int j = 1; j < this.generated[i].length-1; j++) {
+                if (generated[i][j] == ' ') continue;
+                
+                
+                
+                //Walls
+                if (generated[i+1][j] == ' ') {generated[i][j] = '('; continue;}
+                if (generated[i-1][j] == ' ') {generated[i][j] = '"'; continue;}
+                if (generated[i][j+1] == ' ') {generated[i][j] = '&'; continue;}
+                if (generated[i][j-1] == ' ') {generated[i][j] = '$'; continue;}
+
+                
+                
+            }
+        }
+
+        for (int i = 1; i < this.generated.length-1; i++) {
+            for (int j = 1; j < this.generated[i].length-1; j++) {
+                if (generated[i][j] == ' ') continue;
+                
+                //Corner Pieces
+                if (generated[i+1][j] == '&' && generated[i][j+1] == '(') {generated[i][j] = '!' + 45; continue;}
+            }
+        }
+
+        
+        System.out.println(this);
         return this.generated;
 
     }
@@ -95,9 +123,9 @@ public class Floor {
         return s;
     }
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         Floor f = new Floor(80, 80, 8);
         f.generate();
         System.out.println(f);
-    }*/
+    }
 }
