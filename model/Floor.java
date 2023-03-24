@@ -1,26 +1,28 @@
 package model;
 
+import java.util.Arrays;
+
 public class Floor {
     private int w;
     private int h;
 
     private Room[] rooms;
 
-    private char[][] generated;
+    private int[][] generated;
 
     public Floor(int w, int h, int roomCount) {
         this.w = w;
         this.h = h;
         this.rooms = new Room[roomCount];
 
-        this.generated = new char[h][w];
+        this.generated = new int[h][w];
 
         for (int iH = 0; iH < h; iH++)
             for (int iW = 0; iW < w; iW++)
-                this.generated[iH][iW] = '%';
+                this.generated[iH][iW] = 4;
     }
 
-    public char[][] generate() {
+    public int[][] generate() {
         //Generating Rooms
         for (int i = 0; i < rooms.length; i++) {
             
@@ -44,9 +46,11 @@ public class Floor {
 
         //Saving rooms in generated Array 
         for (int i = 0; i < rooms.length; i++) {
-            for (int iH = 0; iH < rooms[i].getH(); iH++)
-                for (int iW = 0; iW < rooms[i].getW(); iW++)
-                    this.generated[rooms[i].getY() + iH][rooms[i].getX() + iW] = ' ';
+            for (int cptY = 0; cptY < rooms[i].getH(); cptY++) {
+                for (int cptX = 0; cptX < rooms[i].getW(); cptX++) {
+                    this.generated[rooms[i].getY() + cptY][rooms[i].getX() +cptX] = -1;
+                }
+            }
         }
 
         //Generating Roads
@@ -62,34 +66,14 @@ public class Floor {
             }
         }
 
-        for (int i = 1; i < this.generated.length-1; i++) {
-            for (int j = 1; j < this.generated[i].length-1; j++) {
-                if (generated[i][j] == ' ') continue;
-                
-                
-                
-                //Walls
-                if (generated[i+1][j] == ' ') {generated[i][j] = '('; continue;}
-                if (generated[i-1][j] == ' ') {generated[i][j] = '"'; continue;}
-                if (generated[i][j+1] == ' ') {generated[i][j] = '&'; continue;}
-                if (generated[i][j-1] == ' ') {generated[i][j] = '$'; continue;}
-
-                
-                
+        //Wall Post-processing
+        for (int i = 1; i < generated.length-1; i++) {
+            for (int j = 1; j < generated[i].length-1; j++) {
+                generated[i][j] = getTile(i, j);
+                generated[i][j] = randomize(i,j);
             }
         }
 
-        for (int i = 1; i < this.generated.length-1; i++) {
-            for (int j = 1; j < this.generated[i].length-1; j++) {
-                if (generated[i][j] == ' ') continue;
-                
-                //Corner Pieces
-                if (generated[i+1][j] == '&' && generated[i][j+1] == '(') {generated[i][j] = '!' + 45; continue;}
-            }
-        }
-
-        
-        System.out.println(this);
         return this.generated;
 
     }
@@ -98,14 +82,18 @@ public class Floor {
         int maxX = Math.max(x1, x2);
         int minX = Math.min(x1, x2);
 
-        for (int i = minX ; i <= maxX; i++) generated[y][i] = ' ';
+        for (int i = minX ; i <= maxX; i++) {
+            generated[y][i] = -1;
+        }
     }
 
     public void verticalPath(int y1, int y2, int x) {
         int maxY = Math.max(y1, y2);
         int minY = Math.min(y1, y2);
 
-        for (int i = minY ; i <= maxY; i++) generated[i][x] = ' ';
+        for (int i = minY ; i <= maxY; i++) {
+            generated[i][x] = -1;
+        }
     }
 
     public String toString() {
@@ -121,6 +109,56 @@ public class Floor {
             
 
         return s;
+    }
+
+    public int getTile(int i, int j) {
+        boolean[] tiles = new boolean[9];
+
+        for (int cpt = 0; cpt < tiles.length; cpt++) {
+            tiles[cpt] = (generated[i-1+cpt/3][j-1+cpt%3] != -1);
+        }
+
+        if (!tiles[4]) return generated[i][j];
+
+        
+        //One Way
+        if (!tiles[1] && !tiles[7] && !tiles[5]) return 23;
+        if (!tiles[1] && !tiles[7] && !tiles[3]) return 21;
+
+        if (!tiles[3] && !tiles[5] && !tiles[1]) return 19;
+        if (!tiles[3] && !tiles[5] && !tiles[7]) return 25;
+        
+        if (!tiles[1] && !tiles[7]) return 10;
+        if (!tiles[3] && !tiles[5]) return 12;
+
+        //Angles
+        if (!tiles[0] && !tiles[1] && !tiles[3]) return 0;
+        if (!tiles[1] && !tiles[2] && !tiles[5]) return 2;
+        if (!tiles[3] && !tiles[6] && !tiles[7]) return 6;
+        if (!tiles[5] && !tiles[7] && !tiles[8]) return 8;
+        
+        //Side Walls
+        for (int cpt = 1; cpt < tiles.length; cpt += 2) {
+            if (!tiles[cpt]) return cpt;
+        }
+
+        //Corner Pieces
+        if (!tiles[0]) return 49;
+        if (!tiles[2]) return 48;
+        if (!tiles[6]) return 46;
+        if (!tiles[8]) return 45;
+
+        return generated[i][j];
+    }
+
+    public int randomize(int i, int j) {
+        int rand = (int)(Math.random()*3);
+
+        if (rand == 0 && generated[i][j] >= 0) {
+            generated[i][j] += 72;
+        }
+
+        return generated[i][j];
     }
 
     public static void main(String[] args) {

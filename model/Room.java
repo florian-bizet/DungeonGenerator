@@ -14,34 +14,8 @@ public class Room {
     }
 
     public boolean intersect(Room r) {
-        return (this.x < r.x + r.w && this.x + this.w > r.x) && (this.y < r.y + r.h && this.y + this.h > r.y);
+        return (this.x < r.x + r.w+2 && this.x + this.w+2 > r.x) && (this.y < r.y + r.h+2 && this.y + this.h+2 > r.y);
     }
-
-    
-
-    /*public static void main(String[] args) {
-        Room r1 = new Room(0, 0, 25, 25);
-        Room r2 = new Room(5,5,5,5);
-
-        System.out.println("Test 1 : Room 2 inside Room 1");
-        System.out.println("Expected output : true");
-        System.out.println("Output 1        : " + r1.intersect(r2));
-        System.out.println("Output 2        : " + r2.intersect(r1));
-
-        Room r3 = new Room(25, 25, 1, 1);
-
-        System.out.println("Test 2 : Room 3 1 tile next to Room 1");
-        System.out.println("Expected output : true");
-        System.out.println("Output 1        : " + r1.intersect(r3));
-        System.out.println("Output 2        : " + r3.intersect(r1));
-
-        Room r4 = new Room(30, 30, 25, 25);
-
-        System.out.println("Test 3 : Room 4 separated from Room 1");
-        System.out.println("Expected output : false");
-        System.out.println("Output 1        : " + r1.intersect(r4));
-        System.out.println("Output 2        : " + r4.intersect(r1));
-    }*/
 
     public int getX() {
         return x;
